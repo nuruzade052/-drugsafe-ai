@@ -1,0 +1,52 @@
+{
+  "name": "drugsafe-ai",
+  "version": "3.6.0",
+  "description": "DrugSafe AI clinical medication safety decision-support prototype",
+  "main": "main.js",
+  "author": "DrugSafe AI",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dist:win": "electron-builder --win nsis portable --x64"
+  },
+  "devDependencies": {
+    "electron": "44.4.3",
+    "electron-builder": "26.0.12"
+  },
+  "build": {
+    "appId": "com.drugsafeai.desktop",
+    "productName": "DrugSafe AI",
+    "asar": true,
+    "files": [
+      "index.html",
+      "drugsafe-app-1.js",
+      "drugsafe-app-2.js",
+      "main.js"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DrugSafe AI",
+      "artifactName": "DrugSafe-AI-Setup-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "DrugSafe-AI-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}
