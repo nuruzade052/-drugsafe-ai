@@ -1,0 +1,57 @@
+name: Build and Publish Windows v3.6
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "package.json"
+      - "main.js"
+      - "index.html"
+      - "drugsafe-app-1.js"
+      - "drugsafe-app-2.js"
+      - ".github/workflows/build-windows.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        shell: pwsh
+        run: npm install
+
+      - name: Build Windows installer and portable app
+        shell: pwsh
+        run: npm run dist:win
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DrugSafe-AI-v3.6-Windows
+          path: dist/*.exe
+          if-no-files-found: error
+
+      - name: Create or update public GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "v3.6.0"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "DrugSafe AI v3.6.0" --notes "DrugSafe AI v3.6.0 Windows release. Includes Windows Setup and Portable builds. Clinical decision-support prototype; not a prescribing or order-entry system."
+          }
+          gh release upload $tag dist/*.exe --clobber
