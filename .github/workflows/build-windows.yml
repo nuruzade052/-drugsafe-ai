@@ -1,4 +1,4 @@
-name: Build and Publish Windows v3.6
+name: Build and Publish Windows v3.7
 
 on:
   push:
@@ -6,9 +6,13 @@ on:
     paths:
       - "package.json"
       - "main.js"
+      - "preload.js"
       - "index.html"
       - "drugsafe-app-1.js"
       - "drugsafe-app-2.js"
+      - "drugsafe-distribution-v37.js"
+      - "build/icon.png"
+      - "build/icon.ico"
       - ".github/workflows/build-windows.yml"
   workflow_dispatch:
 
@@ -33,13 +37,26 @@ jobs:
 
       - name: Build Windows installer and portable app
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: npm run dist:win
+
+      - name: Verify v3.7 outputs
+        shell: pwsh
+        run: |
+          Get-ChildItem dist
+          if (-not (Test-Path "dist/DrugSafe-AI-Setup-3.7.0-x64.exe")) { throw "Setup EXE missing" }
+          if (-not (Test-Path "dist/DrugSafe-AI-Portable-3.7.0-x64.exe")) { throw "Portable EXE missing" }
+          if (-not (Test-Path "dist/latest.yml")) { throw "latest.yml missing; auto-update metadata not generated" }
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DrugSafe-AI-v3.6-Windows
-          path: dist/*.exe
+          name: DrugSafe-AI-v3.7-Windows
+          path: |
+            dist/*.exe
+            dist/*.yml
+            dist/*.blockmap
           if-no-files-found: error
 
       - name: Create or update public GitHub Release
@@ -47,9 +64,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = "v3.6.0"
+          $tag = "v3.7.0"
           gh release view $tag 2>$null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --title "DrugSafe AI v3.6.0" --notes "DrugSafe AI v3.6.0 Windows release. Includes Windows Setup and Portable builds. Clinical decision-support prototype; not a prescribing or order-entry system."
+            gh release create $tag --title "DrugSafe AI v3.7.0 — Distribution Release" --notes "DrugSafe AI v3.7 adds branded Windows packaging, About & Update screen, version checking, installer/portable distribution, and in-app update support for the installed Windows build. Clinical decision-support prototype; not a prescribing or order-entry system. This release is not yet code-signed by a trusted commercial certificate."
           }
-          gh release upload $tag dist/*.exe --clobber
+          gh release upload $tag dist/*.exe dist/*.yml dist/*.blockmap --clobber
