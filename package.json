@@ -3,7 +3,7 @@
   "version": "3.7.0",
   "description": "DrugSafe AI clinical medication safety and dose decision-support prototype",
   "main": "main.js",
-  "author": "DrugSafe AI • Parviz Nuruzade",
+  "author": "DrugSafe AI - Parviz Nuruzade",
   "license": "UNLICENSED",
   "scripts": {
     "dist:win": "electron-builder --win nsis portable --x64 --publish never"
@@ -18,7 +18,7 @@
   "build": {
     "appId": "com.drugsafeai.desktop",
     "productName": "DrugSafe AI",
-    "copyright": "Copyright © 2026 DrugSafe AI • Parviz Nuruzade",
+    "copyright": "Copyright (c) 2026 DrugSafe AI - Parviz Nuruzade",
     "asar": true,
     "files": [
       "index.html",
