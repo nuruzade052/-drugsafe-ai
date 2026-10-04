@@ -1,12 +1,15 @@
 {
   "name": "drugsafe-ai",
-  "version": "3.6.0",
-  "description": "DrugSafe AI clinical medication safety decision-support prototype",
+  "version": "3.7.0",
+  "description": "DrugSafe AI clinical medication safety and dose decision-support prototype",
   "main": "main.js",
-  "author": "DrugSafe AI",
+  "author": "DrugSafe AI • Parviz Nuruzade",
   "license": "UNLICENSED",
   "scripts": {
     "dist:win": "electron-builder --win nsis portable --x64 --publish never"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
   },
   "devDependencies": {
     "electron": "44.4.3",
@@ -15,17 +18,33 @@
   "build": {
     "appId": "com.drugsafeai.desktop",
     "productName": "DrugSafe AI",
+    "copyright": "Copyright © 2026 DrugSafe AI • Parviz Nuruzade",
     "asar": true,
     "files": [
       "index.html",
       "drugsafe-app-1.js",
       "drugsafe-app-2.js",
-      "main.js"
+      "drugsafe-distribution-v37.js",
+      "main.js",
+      "preload.js",
+      "build/icon.png",
+      "build/icon.ico"
     ],
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "nuruzade052",
+        "repo": "-drugsafe-ai",
+        "releaseType": "release"
+      }
+    ],
     "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "DrugSafe-AI-${version}-${arch}.${ext}",
       "target": [
         {
           "target": "nsis",
@@ -47,6 +66,10 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "DrugSafe AI",
+      "uninstallDisplayName": "DrugSafe AI",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
       "artifactName": "DrugSafe-AI-Setup-${version}-${arch}.${ext}"
     },
     "portable": {
