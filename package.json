@@ -6,7 +6,7 @@
   "author": "DrugSafe AI",
   "license": "UNLICENSED",
   "scripts": {
-    "dist:win": "electron-builder --win nsis portable --x64"
+    "dist:win": "electron-builder --win nsis portable --x64 --publish never"
   },
   "devDependencies": {
     "electron": "44.4.3",
@@ -29,11 +29,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
